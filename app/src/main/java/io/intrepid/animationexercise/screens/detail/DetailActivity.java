@@ -1,5 +1,9 @@
 package io.intrepid.animationexercise.screens.detail;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -7,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -87,6 +92,18 @@ public class DetailActivity extends BaseMvpActivity<DetailContract.Presenter> im
     //TODO: complete this method
     @Override
     public void animateImage() {
+        ObjectAnimator fadeAnim = ObjectAnimator.ofFloat(catImageView, "alpha", 1f, 0f);
+        fadeAnim.setDuration(250);
+        fadeAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+// Play bouncer before fade
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(fadeAnim);
+        animatorSet.start();
         super.onBackPressed();
     }
 
@@ -101,6 +118,16 @@ public class DetailActivity extends BaseMvpActivity<DetailContract.Presenter> im
     public void animatePowerUp() {
         Drawable drawable = powerUpBar.getDrawable();
         drawable.setLevel(10000);
+        ObjectAnimator moveAnim = ObjectAnimator.ofFloat(powerUpBar, "Y", 1000);
+        moveAnim.setDuration(20000);
+        moveAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                drawable.setLevel(0);
+            }
+        });
+        moveAnim.setInterpolator(new BounceInterpolator());
+        moveAnim.start();
     }
 
     @Override
