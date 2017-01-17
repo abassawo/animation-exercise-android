@@ -1,10 +1,14 @@
 package io.intrepid.animationexercise.screens.overview;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.TextView;
 
 import java.util.List;
@@ -52,7 +56,16 @@ public class OverviewActivity extends BaseMvpActivity<OverviewContract.Presenter
     //TODO: complete this method
     @Override
     public void goToCatDetail(Cat cat) {
-        startActivity(DetailActivity.getStartIntent(this, cat));
+        ObjectAnimator moveAnim = ObjectAnimator.ofFloat(catImageView, "X", 1000);
+        moveAnim.setDuration(2000);
+        moveAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                startActivity(DetailActivity.getStartIntent(OverviewActivity.this, cat));
+            }
+        });
+        moveAnim.setInterpolator(new BounceInterpolator());
+        moveAnim.start();
     }
 
     @Override
